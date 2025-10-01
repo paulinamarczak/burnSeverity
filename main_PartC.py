@@ -112,9 +112,11 @@ def water_masking(barc_raster, water_layer):
 
 
 # Define variables
-root = r"\\spatialfiles2.bcgov\Work\FOR\VIC\HTS\INV\WorkArea\pmarczak\burnseverity" # root folder
-basename = 'one_year_post' # output geodatabase name
-fire_year = '2024' #fire year, will be appended to the basename
+# root = r"\\spatialfiles2.bcgov\Work\FOR\VIC\HTS\INV\WorkArea\pmarczak\burnseverity" # root folder
+root = r"C:\\Users\\pmarczak\\Documents\\burnseverity" # root folder
+
+basename = 'same_year' # output geodatabase name
+fire_year = '2025' #fire year, will be appended to the basename
 
 # Load in water layer from objectstorage
 water_layer = r"\\objectstore2.nrs.bcgov\RSImgShare\water\vector\s2_bc_2022JulAug_2023JulAug_2024JulAug_bcalb_10m_water_Province.shp"
@@ -137,31 +139,31 @@ arcpy.env.pyramid = "PYRAMIDS"
 
 
 # For each firenumber, get barc file 
-# for firenumber in firelist:
-#     if firenumber in ("")
-#     print('Filtering',firenumber)
-#     barc_path = os.path.join(outpath,firenumber,'barc')
-#     arcpy.env.workspace = barc_path
-#     print("line 149", firenumber)
-#     #i = getfiles(barc_path,'_clip.tif')[0]
-#     i_full = getbarc_notclipped(barc_path,'.tif')[0]
-#     # BuildRasterAttributeTable_management requires FILENAME not PATHNAME
-#     #therefore input i should be tif name only
-#     i_name = os.path.basename(i_full)
-#     print('Masking water, setting water pixels to 5')
-#     ii = water_masking(i_name,water_layer)
-#     print('Input BARC raster:',i_name) #input is i for water masking, output is ii
-#     print('Output water-masked BARC raster', ii) #output after water masking
-#     out_name = Path(ii).stem + '_filtered.tif'
-#     out_raster = os.path.join(filtered_path,out_name)
-#     print('Output BARC raster:',out_raster)
-#     barc_filter(ii,out_raster)
+for firenumber in firelist:
+    # if firenumber in ("")
+    print('Filtering',firenumber)
+    barc_path = os.path.join(outpath,firenumber,'barc')
+    arcpy.env.workspace = barc_path
+    print("line 149", firenumber)
+    #i = getfiles(barc_path,'_clip.tif')[0]
+    i_full = getbarc_notclipped(barc_path,'.tif')[0]
+    # BuildRasterAttributeTable_management requires FILENAME not PATHNAME
+    #therefore input i should be tif name only
+    i_name = os.path.basename(i_full)
+    print('Masking water, setting water pixels to 5')
+    ii = water_masking(i_name,water_layer)
+    print('Input BARC raster:',i_name) #input is i for water masking, output is ii
+    print('Output water-masked BARC raster', ii) #output after water masking
+    out_name = Path(ii).stem + '_filtered.tif'
+    out_raster = os.path.join(filtered_path,out_name)
+    print('Output BARC raster:',out_raster)
+    barc_filter(ii,out_raster)
     
 
 # # New dict for sceneIds
-# d = dict.fromkeys(firelist)
+d = dict.fromkeys(firelist)
 
-# df = pd.DataFrame(data=None,columns=['barc_tif','PRE_FIRE_IMAGE','POST_FIRE_IMAGE'])
+df = pd.DataFrame(data=None,columns=['barc_tif','PRE_FIRE_IMAGE','POST_FIRE_IMAGE'])
 
 # Look for burn severity 
 barc_folder = os.path.join(root,'export','filtered')
@@ -212,13 +214,13 @@ for barc_tif in barc_list:
     #FIRE_NUMBER
     f = 'FIRE_NUMBER'
     arcpy.AddField_management(out_fc, f, "TEXT")
-    arcpy.CalculateField_management(out_fc, f, "\"" + fire_number + "\"", "PYTHON_9.3")
+    arcpy.CalculateField_management(out_fc, f, "\"" + fire_number + "\"", "PYTHON3")
     print('    - added fire number to feature class')
     
     #FIRE_YEAR
     f = 'FIRE_YEAR'
     arcpy.AddField_management(out_fc, f, "TEXT")
-    arcpy.CalculateField_management(out_fc, f, "\"" + fire_year + "\"", "PYTHON_9.3") 
+    arcpy.CalculateField_management(out_fc, f, "\"" + fire_year + "\"", "PYTHON3") 
     print('    - added fire_year to feature class')
     
     #open json
